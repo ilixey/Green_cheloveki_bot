@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.print.Doc;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,31 +56,30 @@ public class StatisticsBot extends TelegramLongPollingBot {
 //            sendMessage.setChatId(chatId);
 //            execute(sendMessage);
 //        }
-        File file = new File("test.pdf");
+        File file = new File("/opt/tomcat/latest/test.pdf");
         Document document = new Document();
         try{
             PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
+            document.add(new Paragraph("List of the activities on " + list.get(list.size()).getDate() + "\n\n\n"));
             for (ActivityEntity activity: list){
                 long actDate = activity.getDate().getTime();
                 Date date = new Date(actDate);
-                document.add((new Paragraph("Id: " + activity.getId() + "\n" + "Name: " + activity.getName() + "\n" + "Surname: " + activity.getSurname() + "\n" + "Activity: " + activity.getActivity() + "\n" + "Duration: " + activity.getDuration() + " часов" + "\n" + "Date of publish: " + date.toString() + "\n\n\n")));
+                document.add((new Paragraph("Id: " + activity.getId() + "\n" + "Name: " + activity.getName() + "\n" + "Surname: " + activity.getSurname() + "\n" + "Activity: " + activity.getActivity() + "\n" + "Duration: " + activity.getDuration() + " часов" + "\n" + "Date of publish: " + date.toString() + "-------------")));
 
             }
-
             document.close();
             pdfWriter.close();
-
         } catch (DocumentException e) {
             throw new RuntimeException(e);
         }
+
         SendDocument sendDocument = new SendDocument();
-
         sendDocument.setDocument(new InputFile(file));
-
         for (Long chatId: chatIdList){
             sendDocument.setChatId(chatId);
             execute(sendDocument);
         }
+
     }
 }
