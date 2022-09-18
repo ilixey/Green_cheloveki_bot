@@ -12,7 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import javax.print.Doc;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
