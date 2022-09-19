@@ -39,7 +39,7 @@ public class HelloServlet extends HttpServlet {
         }
 
         Timer timer = new Timer();
-        timer.schedule(new MyTimerTask(statisticsBot), date, 60000);
+        timer.schedule(new MyTimerTask(statisticsBot), date, 3600000);
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
