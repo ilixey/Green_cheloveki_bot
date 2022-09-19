@@ -1,6 +1,7 @@
 package com.finalbuild.entities;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class ActivityEntity {
     private long id;
@@ -8,7 +9,7 @@ public class ActivityEntity {
     private String surname;
     private String activity;
     private double duration;
-    private Date date;
+    private Timestamp date;
 
     public long getId() {
         return id;
@@ -30,11 +31,11 @@ public class ActivityEntity {
         return duration;
     }
 
-    public Date getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public ActivityEntity(long id, String name, String surname, String activity, double duration, Date date) {
+    public ActivityEntity(long id, String name, String surname, String activity, double duration, Timestamp date) {
         this.id = id;
         this.name = name;
         this.surname = surname;

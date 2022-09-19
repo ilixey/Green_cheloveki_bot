@@ -33,13 +33,13 @@ public class HelloServlet extends HttpServlet {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
         try {
-            date = dateFormat.parse("2022-09-17 17:30:00");
+            date = dateFormat.parse("2022-09-19 9:30:00");
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
 
         Timer timer = new Timer();
-        timer.schedule(new MyTimerTask(statisticsBot), date, 100000);
+        timer.schedule(new MyTimerTask(statisticsBot), date, 60000);
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

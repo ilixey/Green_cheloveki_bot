@@ -3,6 +3,7 @@ package com.finalbuild.services;
 import com.finalbuild.entities.ActivityEntity;
 
 import java.sql.*;
+import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class DatabaseService {
     private final String login = "vaspiakou";
     private final String password = "vaspiakou";
 
-    private final String SELECT_ACTIVITY = "select activities.id, users.name, users.surname, activities.activity, activities.duration, activities.publication_date from activities LEFT JOIN users ON activities.user_id = users.id";
+    private final String SELECT_ACTIVITY = "select activities.id, users.name, users.surname, activities.activity, activities.duration, activities.publication_date from activities LEFT JOIN users ON activities.user_id = users.id where activities.publication_date > ?";
 
     /**
      * Get a connection to the database.
@@ -40,9 +41,14 @@ public class DatabaseService {
         List<ActivityEntity> list = new LinkedList<>();
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ACTIVITY)){
+            Timestamp ts=new Timestamp(System.currentTimeMillis());
+            Date date=new Date(ts.getTime());
+            int day = date.getDate();
+            date.setDate(day - 1);
+            preparedStatement.setDate(1, date);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                list.add(new ActivityEntity(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("surname"), resultSet.getString("activity"), resultSet.getDouble("duration"), resultSet.getDate("publication_date")));
+                list.add(new ActivityEntity(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("surname"), resultSet.getString("activity"), resultSet.getDouble("duration"), resultSet.getTimestamp("publication_date")));
             }
             return list;
         } catch (SQLException e) {

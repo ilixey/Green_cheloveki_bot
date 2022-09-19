@@ -8,6 +8,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -15,9 +16,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
 
 public class StatisticsBot extends TelegramLongPollingBot {
 
@@ -26,7 +31,7 @@ public class StatisticsBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "5754259982:AAFBs9hH0ihQwh8vzqsZltHIU26MmS3zXbo";
+        return "5754259982:AAGPAIbnLkP0hsgClgrvXqGuIvVw4Yj1Czw";
     }
 
     @Override
@@ -38,6 +43,21 @@ public class StatisticsBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (!chatIdList.contains(update.getMessage().getChatId())){
             chatIdList.add(update.getMessage().getChatId());
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setText("Вы успешно добавлены в список рассылки! Ожидайте получения pdf-файла с активностью сотрудников за день.");
+            sendMessage.setChatId(update.getMessage().getChatId());
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                sendStatistics();
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -55,17 +75,14 @@ public class StatisticsBot extends TelegramLongPollingBot {
 //            sendMessage.setChatId(chatId);
 //            execute(sendMessage);
 //        }
-        File file = new File("/opt/tomcat/latest/test.pdf");
+        File file = new File("opt/tomcat/latest/bin/test.pdf");
         Document document = new Document();
         try{
             PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
-            document.add(new Paragraph("List of the activities on " + list.get(list.size()).getDate() + "\n\n\n"));
+            document.add(new Paragraph("List of the activities on " + LocalDate.now() + "\n\n\n"));
             for (ActivityEntity activity: list){
-                long actDate = activity.getDate().getTime();
-                Date date = new Date(actDate);
-                document.add((new Paragraph("Id: " + activity.getId() + "\n" + "Name: " + activity.getName() + "\n" + "Surname: " + activity.getSurname() + "\n" + "Activity: " + activity.getActivity() + "\n" + "Duration: " + activity.getDuration() + " часов" + "\n" + "Date of publish: " + date.toString() + "-------------")));
-
+                document.add((new Paragraph("Id: " + activity.getId() + "\n" + "Name: " + activity.getName() + "\n" + "Surname: " + activity.getSurname() + "\n" + "Activity: " + activity.getActivity() + "\n" + "Duration: " + activity.getDuration() + " часов" + "\n" + "Date of publish: " + activity.getDate() + "\n- - - - - - - - - - - - -")));
             }
             document.close();
             pdfWriter.close();
