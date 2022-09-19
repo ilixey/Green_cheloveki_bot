@@ -51,13 +51,6 @@ public class StatisticsBot extends TelegramLongPollingBot {
             } catch (TelegramApiException e) {
                 throw new RuntimeException(e);
             }
-            try {
-                sendStatistics();
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
