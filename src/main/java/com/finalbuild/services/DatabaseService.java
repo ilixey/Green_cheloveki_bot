@@ -12,8 +12,8 @@ public class DatabaseService {
     private final String login = "vaspiakou";
     private final String password = "vaspiakou";
 
-    private final String SELECT_ACTIVITY = "select activities.id, users.name, users.surname, activities.activity, activities.duration, activities.publication_date from activities LEFT JOIN users ON activities.user_id = users.id where activities.publication_date > ?";
-
+    private final String SELECT_ACTIVITY = "select activities.id, users.name, users.surname, activities.activity, activities.duration, activities.publication_date from activities LEFT JOIN users ON activities.user_id = users.id where activities.publication_date > ? ORDER BY users.name, activities.publication_date";
+    private final String UPDATE_ACTIVITIES = "update activities set deletable=false";
     /**
      * Get a connection to the database.
      *
@@ -40,7 +40,10 @@ public class DatabaseService {
     public List<ActivityEntity> getAllActivities(){
         List<ActivityEntity> list = new LinkedList<>();
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ACTIVITY)){
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ACTIVITY);
+             PreparedStatement preparedStatementUpdate = connection.prepareStatement(UPDATE_ACTIVITIES)){
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             Timestamp ts=new Timestamp(System.currentTimeMillis());
             Date date=new Date(ts.getTime());
             int day = date.getDate();
@@ -50,6 +53,8 @@ public class DatabaseService {
             while(resultSet.next()){
                 list.add(new ActivityEntity(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("surname"), resultSet.getString("activity"), resultSet.getDouble("duration"), resultSet.getTimestamp("publication_date")));
             }
+            preparedStatementUpdate.executeUpdate();
+            connection.commit();
             return list;
         } catch (SQLException e) {
             throw new RuntimeException(e);
