@@ -33,7 +33,7 @@ public class HelloServlet extends HttpServlet {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
         try {
-            date = dateFormat.parse("2022-09-21 14:30:00");
+            date = dateFormat.parse("2022-09-20 14:30:00");
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

@@ -50,6 +50,7 @@ public class StatisticsBot extends TelegramLongPollingBot {
                     sendDocument.setDocument(new InputFile(file));
                     sendDocument.setChatId(update.getMessage().getChatId());
                     execute(sendDocument);
+                    file.delete();
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 } catch (DocumentException e) {
@@ -81,6 +82,6 @@ public class StatisticsBot extends TelegramLongPollingBot {
             sendDocument.setChatId(chatId);
             execute(sendDocument);
         }
-
+        file.delete();
     }
 }

@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DatabaseService {
-    private final String url = "jdbc:postgresql://34.116.188.24:5432/testdb";
+    private final String url = "jdbc:postgresql://34.116.188.24:5432/vaspiakou";
     private final String login = "vaspiakou";
     private final String password = "vaspiakou";
 
@@ -31,7 +31,6 @@ public class DatabaseService {
         }
         return connection;
     }
-
     /**
      * It gets all the activities from the database and returns them as a list of ActivityEntity objects
      *
